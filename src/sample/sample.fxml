@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <top>
+      <Pane fx:id="topPane" onMouseDragged="#handleMovementAction" onMousePressed="#handleClickAction" prefHeight="30.0" style="-fx-background-color: #1e90ff;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnClose" layoutX="574.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleCloseAction" text="X">
+               <style>
+                  -fx-background-color: #1e90ff;
+               </style>
+            </Button>
+            <Button fx:id="btnMin" layoutX="550.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleMinAction" text="_">
+               <style>
+                  -fx-background-color: #1e90ff;
+               </style>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </top>
+   <center>
+      <WebView fx:id="webSVG" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <style>
+                 -fx-context-menu-enabled: false;
+
+              </style>
+      </WebView>
+   </center>
+   <bottom>
+      <Pane prefHeight="54.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="txtFieldTwelveDigit" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="437.0" />
+            <Button fx:id="btnGenerer" layoutX="460.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#generateClick" prefHeight="25.0" prefWidth="124.0" text="Générer">
+               <style>
+                  -fx-background-color: #1e90ff;
+               </style>
+            </Button>
+         </children>
+      </Pane>
+   </bottom>
+   <right>
+      <Pane prefHeight="316.0" prefWidth="147.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>
