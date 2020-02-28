@@ -79,7 +79,7 @@ public class Controller implements Initializable {
     public void generateClick(MouseEvent event){
         barCode();
         //engine.load(System.getProperty("user.dir")+"\\codeBar.html");
-        engine.load("D:\\Axel\\Programmation\\Java\\codeBar.html"); //probleme avec le chargement de l'image.
+        engine.load("file:///C:/Users/axelz/Desktop/testJava.html"); //probleme avec le chargement de l'image.
         //txtFieldTwelveDigit.setText(System.getProperty("user.dir")+"\\codeBar.html");
 
     }
@@ -116,7 +116,7 @@ public class Controller implements Initializable {
             }
 
             //Draw bars
-            drawBars(encodedDigits);
+            drawBars(encodedDigits, code);
         }
 
         //texte en noir
@@ -263,21 +263,25 @@ public class Controller implements Initializable {
     }
 
     //Draw bars
-    public void drawBars(String[] encodedDigits){
+    public void drawBars(String[] encodedDigits, String code){
         try {
-            FileWriter writer = new FileWriter("codeBar.html");
+            FileWriter writer = new FileWriter("C:/Users/axelz/Desktop/testJava.html");
             BufferedWriter bwr = new BufferedWriter(writer);
             bwr.write("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1000\" height=\"300\">" + "\n");
             bwr.write("<line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"5\" y1=\"0\" x2=\"5\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"10\" y1=\"0\" x2=\"10\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"15\" y1=\"0\" x2=\"15\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"20\" y1=\"0\" x2=\"20\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"25\" y1=\"0\" x2=\"25\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"30\" y1=\"0\" x2=\"30\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
 
             // left guard bars
-            bwr.write("<line x1=\"15\" y1=\"0\" x2=\"15\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"20\" y1=\"0\" x2=\"20\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"25\" y1=\"0\" x2=\"25\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"35\" y1=\"0\" x2=\"35\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"40\" y1=\"0\" x2=\"40\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"45\" y1=\"0\" x2=\"45\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
 
-            int spacingDigit = 30;
+            int spacingDigit = 50;
             for (int i = 0; i < 6; i++) {
                 String bars = encodedDigits[i];
                 for (int j = 0; j < bars.length(); j++) {
@@ -298,14 +302,14 @@ public class Controller implements Initializable {
             }
 
             //center guard bars
-            bwr.write("<line x1=\"240\" y1=\"0\" x2=\"240\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"245\" y1=\"0\" x2=\"245\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"250\" y1=\"0\" x2=\"250\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"255\" y1=\"0\" x2=\"255\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"260\" y1=\"0\" x2=\"260\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"265\" y1=\"0\" x2=\"265\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"270\" y1=\"0\" x2=\"270\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"275\" y1=\"0\" x2=\"275\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"280\" y1=\"0\" x2=\"280\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
 
             //right digits
-            spacingDigit = 265;
+            spacingDigit = 285;
             for (int i = 6; i < 12; i++) {
                 String bars = encodedDigits[i];
                 for (int j = 0; j < bars.length(); j++) {
@@ -325,9 +329,23 @@ public class Controller implements Initializable {
             }
 
             // right guard bars
-            bwr.write("<line x1=\"475\" y1=\"0\" x2=\"475\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"480\" y1=\"0\" x2=\"480\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
-            bwr.write("<line x1=\"485\" y1=\"0\" x2=\"485\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"495\" y1=\"0\" x2=\"495\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"500\" y1=\"0\" x2=\"500\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+            bwr.write("<line x1=\"505\" y1=\"0\" x2=\"505\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
+
+            bwr.write("<text x=\"0\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(0) + "</text>" + "\n");
+            bwr.write("<text x=\"70\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(1) + "</text>" + "\n");
+            bwr.write("<text x=\"100\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(2) + "</text>" + "\n");
+            bwr.write("<text x=\"130\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(3) + "</text>" + "\n");
+            bwr.write("<text x=\"160\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(4) + "</text>" + "\n");
+            bwr.write("<text x=\"190\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(5) + "</text>" + "\n");
+            bwr.write("<text x=\"220\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(6) + "</text>" + "\n");
+            bwr.write("<text x=\"300\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(7) + "</text>" + "\n");
+            bwr.write("<text x=\"330\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(8) + "</text>" + "\n");
+            bwr.write("<text x=\"360\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(9) + "</text>" + "\n");
+            bwr.write("<text x=\"390\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(10) + "</text>" + "\n");
+            bwr.write("<text x=\"420\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(11) + "</text>" + "\n");
+            bwr.write("<text x=\"450\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(12) + "</text>" + "\n");
 
             bwr.write("</svg>");
             bwr.close();
