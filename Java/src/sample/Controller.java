@@ -78,10 +78,6 @@ public class Controller implements Initializable {
     @FXML
     public void generateClick(MouseEvent event){
         barCode();
-        //engine.load(System.getProperty("user.dir")+"\\codeBar.html");
-        engine.load("file:///C:/Users/axelz/Desktop/testJava.html"); //probleme avec le chargement de l'image.
-        //txtFieldTwelveDigit.setText(System.getProperty("user.dir")+"\\codeBar.html");
-
     }
 
 
@@ -117,6 +113,9 @@ public class Controller implements Initializable {
 
             //Draw bars
             drawBars(encodedDigits, code);
+
+            //chargement de l'image
+            engine.load("file:///C:/Users/axelz/Desktop/testJava.html"); //probleme avec le chargement de l'image.
         }
 
         //texte en noir
