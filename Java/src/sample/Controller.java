@@ -1,24 +1,35 @@
 package sample;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Hashtable;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -26,6 +37,12 @@ public class Controller implements Initializable {
     @FXML Button btnMin;
     @FXML Button btnClose;
     @FXML Pane topPane;
+    @FXML Label checkDigitLabel;
+    @FXML Label codeSysteme;
+    @FXML Label companyID;
+    @FXML Label articleID;
+    @FXML ToggleButton eanButton;
+    @FXML ToggleButton qrcodeButton;
     @FXML TextField txtFieldTwelveDigit;
     @FXML WebView webSVG;
     WebEngine engine;
@@ -39,12 +56,67 @@ public class Controller implements Initializable {
     public String[] rightDigitEncoder = {"1110010","1100110", "1101100", "1000010", "1011100", "1001110", "1010000", "1000100", "1001000", "1110100"};
     public String[] leftDigitEncoderImpair = {"0001101","0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011"};
     public String[] leftDigitEncoderPair = {"0100111","0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111"};
+    public String barcodeType = "ean";
+    public String filePath = System.getProperty("user.dir") +"\\qrCode.png";
+    public String filePath2 = System.getProperty("user.dir") + "\\ean13.svg";
 
 
 
 
+    public void qrCode() throws IOException, WriterException {
+        webSVG.setZoom(1.4);
+        String code = txtFieldTwelveDigit.getText();
+        String qrCodeText = code;
+        int size = 270;
+        String fileType = "png";
+        File qrFile = new File(filePath);
+        createQRImage(qrFile, qrCodeText, size, fileType);
+        engine.load("file://" + filePath);
+        int a = 0;
+    }
 
+    public void createQRImage(File qrFile, String qrCodeText, int size, String fileType)
+        throws WriterException, IOException {
+        // Create the ByteMatrix for the QR-Code that encodes the given String
+        Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
+        hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix byteMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, size, size, hintMap);
+        // Make the BufferedImage that are to hold the QRCode
+        int matrixWidth = byteMatrix.getWidth();
+        BufferedImage image = new BufferedImage(matrixWidth, matrixWidth, BufferedImage.TYPE_INT_RGB);
+        image.createGraphics();
 
+        Graphics2D graphics = (Graphics2D) image.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, matrixWidth, matrixWidth);
+        // Paint and save the image using the ByteMatrix
+        graphics.setColor(Color.BLACK);
+
+        for (int i = 0; i < matrixWidth; i++) {
+            for (int j = 0; j < matrixWidth; j++) {
+                if (byteMatrix.get(i, j)) {
+                    graphics.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+        ImageIO.write(image, fileType, qrFile);
+    }
+
+    @FXML
+    protected void eanSelected(ActionEvent event){
+        eanButton.setSelected(true);
+        qrcodeButton.setSelected(false);
+        barcodeType = "ean";
+        txtFieldTwelveDigit.clear();
+    }
+    @FXML
+    protected void qrcodeSelected(ActionEvent event){
+        eanButton.setSelected(false);
+        qrcodeButton.setSelected(true);
+        barcodeType = "qrcode";
+        txtFieldTwelveDigit.clear();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,12 +148,19 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void generateClick(MouseEvent event){
-        barCode();
+    public void generateClick(MouseEvent event) throws IOException, WriterException {
+        if (barcodeType == "ean"){
+            barCode();
+        }
+        else{
+            qrCode();
+        }
     }
 
 
     public void barCode() {
+        webSVG.setZoom(1.4);
+
         String code = txtFieldTwelveDigit.getText();
 
         if(code.length() != 12){
@@ -91,8 +170,17 @@ public class Controller implements Initializable {
         else{
             txtFieldTwelveDigit.setStyle("-fx-text-fill: black;");
 
-            code = code + checkDigit(code);
+            String checkDigit = checkDigit(code);
+            code = code + checkDigit;
+
+            checkDigitLabel.setText(checkDigit);
+            codeSysteme.setText(String.valueOf(code.charAt(0))+ String.valueOf(code.charAt(1)));
+            companyID.setText(String.valueOf(code.charAt(2))+ String.valueOf(code.charAt(3))+ String.valueOf(code.charAt(4))+ String.valueOf(code.charAt(5))+ String.valueOf(code.charAt(6)));
+            articleID.setText(String.valueOf(code.charAt(7))+ String.valueOf(code.charAt(8))+ String.valueOf(code.charAt(9))+ String.valueOf(code.charAt(10))+ String.valueOf(code.charAt(11)));
+
+
             gaucheDroite(code);
+
 
             //rightDigitsEncoder
             for (int i = 0; i < rightDigits.length; i++) {
@@ -115,7 +203,7 @@ public class Controller implements Initializable {
             drawBars(encodedDigits, code);
 
             //chargement de l'image
-            engine.load("file:///C:/Users/axelz/Desktop/testJava.html"); //probleme avec le chargement de l'image.
+            engine.load("file://" + filePath2); //probleme avec le chargement de l'image.
         }
 
         //texte en noir
@@ -264,9 +352,9 @@ public class Controller implements Initializable {
     //Draw bars
     public void drawBars(String[] encodedDigits, String code){
         try {
-            FileWriter writer = new FileWriter("C:/Users/axelz/Desktop/testJava.html");
+            FileWriter writer = new FileWriter(filePath2);
             BufferedWriter bwr = new BufferedWriter(writer);
-            bwr.write("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1000\" height=\"300\">" + "\n");
+            bwr.write("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"500\" height=\"250\">" + "\n");
             bwr.write("<line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"5\" y1=\"0\" x2=\"5\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"10\" y1=\"0\" x2=\"10\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");

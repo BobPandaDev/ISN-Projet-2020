@@ -1,51 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <top>
       <Pane fx:id="topPane" onMouseDragged="#handleMovementAction" onMousePressed="#handleClickAction" prefHeight="30.0" style="-fx-background-color: #1e90ff;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="btnClose" layoutX="574.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleCloseAction" text="X">
+            <Button fx:id="btnClose" layoutX="971.0" layoutY="2.0" mnemonicParsing="false" onAction="#handleCloseAction" text="X">
                <style>
                   -fx-background-color: #1e90ff;
                </style>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
-            <Button fx:id="btnMin" layoutX="550.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleMinAction" text="_">
+            <Button fx:id="btnMin" layoutX="947.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleMinAction" text="_">
                <style>
                   -fx-background-color: #1e90ff;
                </style>
                <font>
                   <Font size="14.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
          </children>
       </Pane>
    </top>
-   <center>
-      <WebView fx:id="webSVG" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-              <style>
-                 -fx-context-menu-enabled: false;
-
-              </style>
-      </WebView>
-   </center>
    <bottom>
       <Pane prefHeight="54.0" prefWidth="600.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="txtFieldTwelveDigit" layoutX="14.0" layoutY="15.0" prefHeight="25.0" prefWidth="437.0" />
-            <Button fx:id="btnGenerer" layoutX="460.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#generateClick" prefHeight="25.0" prefWidth="124.0" text="Générer">
+            <TextField fx:id="txtFieldTwelveDigit" layoutX="185.0" layoutY="15.0" prefHeight="25.0" prefWidth="600.0" />
+            <Button fx:id="btnGenerer" layoutX="816.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#generateClick" prefHeight="25.0" prefWidth="149.0" text="Générer">
                <style>
                   -fx-background-color: #1e90ff;
                </style>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
             </Button>
+            <ToggleButton fx:id="eanButton" layoutX="40.0" layoutY="15.0" mnemonicParsing="false" onAction="#eanSelected" selected="true" text="EAN-13">
+            <style>
+               
+            </style>
+            </ToggleButton>
+            <ToggleButton fx:id="qrcodeButton" layoutX="105.0" layoutY="15.0" mnemonicParsing="false" onAction="#qrcodeSelected" prefHeight="25.0" prefWidth="66.0" text="QR Code">
+               <style>
+
+               </style>
+            </ToggleButton>
          </children>
       </Pane>
    </bottom>
    <right>
-      <Pane prefHeight="316.0" prefWidth="147.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER" />
+      <Pane prefHeight="415.0" prefWidth="217.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="415.0" prefWidth="217.0">
+               <children>
+                  <Label layoutX="59.0" layoutY="73.0" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #FFFFFF;" text="Check Digit :" textAlignment="CENTER">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="52.0" layoutY="143.0" text="Code système :" textAlignment="CENTER">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="scieteID" layoutX="18.0" layoutY="217.0" text="Identificateur de société :" textAlignment="CENTER">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="codeSysteme" layoutX="104.0" layoutY="169.0" text="0" textAlignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="articleID" layoutX="26.0" layoutY="290.0" text="Identificateur d'article :" textAlignment="CENTER">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="checkDigitLabel" layoutX="104.0" layoutY="99.0" text="0" textAlignment="JUSTIFY">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="companyID" layoutX="104.0" layoutY="243.0" text="0" textAlignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="articleID" layoutX="104.0" layoutY="316.0" text="0" textAlignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children></Pane>
    </right>
+   <left>
+      <Pane prefHeight="415.0" prefWidth="40.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+         <children>
+            <WebView fx:id="webSVG" layoutY="18.0" prefHeight="399.0" prefWidth="745.0">
+                    <style>
+                 -fx-context-menu-enabled: false;
+
+              </style>
+            </WebView>
+         </children></Pane>
+   </center>
 </BorderPane>
