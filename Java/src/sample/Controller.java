@@ -44,6 +44,8 @@ public class Controller implements Initializable {
     @FXML ToggleButton eanButton;
     @FXML ToggleButton qrcodeButton;
     @FXML TextField txtFieldTwelveDigit;
+    @FXML Pane rightPane;
+    @FXML Pane centerPane;
     @FXML WebView webSVG;
     WebEngine engine;
 
@@ -64,7 +66,6 @@ public class Controller implements Initializable {
 
 
     public void qrCode() throws IOException, WriterException {
-        webSVG.setZoom(1.4);
         String code = txtFieldTwelveDigit.getText();
         String qrCodeText = code;
         int size = 270;
@@ -109,6 +110,9 @@ public class Controller implements Initializable {
         qrcodeButton.setSelected(false);
         barcodeType = "ean";
         txtFieldTwelveDigit.clear();
+        rightPane.setPrefWidth(217);
+        webSVG.setLayoutX(0);
+        engine.load("file://" + filePath2);
     }
     @FXML
     protected void qrcodeSelected(ActionEvent event){
@@ -116,11 +120,16 @@ public class Controller implements Initializable {
         qrcodeButton.setSelected(true);
         barcodeType = "qrcode";
         txtFieldTwelveDigit.clear();
+        rightPane.setPrefWidth(0);
+        webSVG.setLayoutX(90);
+        engine.load("file://" + filePath);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         engine = webSVG.getEngine();
+        webSVG.setZoom(1.4);
+        engine.load("file://" + filePath2);
     }
 
     @FXML
@@ -159,8 +168,6 @@ public class Controller implements Initializable {
 
 
     public void barCode() {
-        webSVG.setZoom(1.4);
-
         String code = txtFieldTwelveDigit.getText();
 
         if(code.length() != 12){
@@ -203,7 +210,7 @@ public class Controller implements Initializable {
             drawBars(encodedDigits, code);
 
             //chargement de l'image
-            engine.load("file://" + filePath2); //probleme avec le chargement de l'image.
+            engine.load("file://" + filePath2);
         }
 
         //texte en noir
