@@ -10,11 +10,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
@@ -46,6 +51,7 @@ public class Controller implements Initializable {
     @FXML TextField txtFieldTwelveDigit;
     @FXML Pane rightPane;
     @FXML Pane centerPane;
+    @FXML Label infoLabel;
     @FXML WebView webSVG;
     WebEngine engine;
 
@@ -58,10 +64,10 @@ public class Controller implements Initializable {
     public String[] rightDigitEncoder = {"1110010","1100110", "1101100", "1000010", "1011100", "1001110", "1010000", "1000100", "1001000", "1110100"};
     public String[] leftDigitEncoderImpair = {"0001101","0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011"};
     public String[] leftDigitEncoderPair = {"0100111","0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111"};
-    public String barcodeType = "ean";
+    public String barcodeType = "";
     public String filePath = System.getProperty("user.dir") +"\\qrCode.png";
     public String filePath2 = System.getProperty("user.dir") + "\\ean13.svg";
-
+    public String filePath3 = System.getProperty("user.dir") + "\\info.html";
 
 
 
@@ -76,8 +82,7 @@ public class Controller implements Initializable {
         int a = 0;
     }
 
-    public void createQRImage(File qrFile, String qrCodeText, int size, String fileType)
-        throws WriterException, IOException {
+    public void createQRImage(File qrFile, String qrCodeText, int size, String fileType) throws WriterException, IOException {
         // Create the ByteMatrix for the QR-Code that encodes the given String
         Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
         hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -104,8 +109,17 @@ public class Controller implements Initializable {
         ImageIO.write(image, fileType, qrFile);
     }
 
+
+
     @FXML
     protected void eanSelected(ActionEvent event){
+        //texte en noir
+        txtFieldTwelveDigit.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                txtFieldTwelveDigit.setStyle("-fx-text-fill: black;");
+            }
+        });
         eanButton.setSelected(true);
         qrcodeButton.setSelected(false);
         barcodeType = "ean";
@@ -116,6 +130,13 @@ public class Controller implements Initializable {
     }
     @FXML
     protected void qrcodeSelected(ActionEvent event){
+        //texte en noir
+        txtFieldTwelveDigit.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                txtFieldTwelveDigit.setStyle("-fx-text-fill: black;");
+            }
+        });
         eanButton.setSelected(false);
         qrcodeButton.setSelected(true);
         barcodeType = "qrcode";
@@ -125,11 +146,18 @@ public class Controller implements Initializable {
         engine.load("file://" + filePath);
     }
 
+    @FXML
+    protected void infoClick(MouseEvent event){
+        engine.load("file://" + filePath3);
+        eanButton.setSelected(false);
+        qrcodeButton.setSelected(false);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         engine = webSVG.getEngine();
         webSVG.setZoom(1.4);
-        engine.load("file://" + filePath2);
+        engine.load("file://" + filePath3);
     }
 
     @FXML
@@ -161,8 +189,12 @@ public class Controller implements Initializable {
         if (barcodeType == "ean"){
             barCode();
         }
-        else{
+        else if (barcodeType == "qrcode"){
             qrCode();
+        }
+        else{
+            txtFieldTwelveDigit.setText("Sélectionnez EAN-13 ou QR-Code.");
+            txtFieldTwelveDigit.setStyle("-fx-text-fill: red;");
         }
     }
 
