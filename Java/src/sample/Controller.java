@@ -148,15 +148,26 @@ public class Controller implements Initializable {
 
     @FXML
     protected void infoClick(MouseEvent event){
-        engine.load("file://" + filePath3);
         eanButton.setSelected(false);
         qrcodeButton.setSelected(false);
+        barcodeType = "";
+        txtFieldTwelveDigit.clear();
+        rightPane.setPrefWidth(0);
+        webSVG.setLayoutX(90);
+        engine.load("file://" + filePath3);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         engine = webSVG.getEngine();
         webSVG.setZoom(1.4);
+
+        eanButton.setSelected(false);
+        qrcodeButton.setSelected(false);
+        barcodeType = "";
+        txtFieldTwelveDigit.clear();
+        rightPane.setPrefWidth(0);
+        webSVG.setLayoutX(90);
         engine.load("file://" + filePath3);
     }
 
