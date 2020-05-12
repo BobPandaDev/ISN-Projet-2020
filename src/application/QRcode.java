@@ -16,37 +16,40 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 
-
+//Class pernettant la creation d'un QRcode a l'aide de la librairy zxing de google
 public class QRcode {
 	
 	public static void qrCode(TextField txtFieldTwelveDigit, String filePath, WebEngine engine) throws IOException, WriterException {
-        String code = txtFieldTwelveDigit.getText();
-        String qrCodeText = code;
-        int size = 270;
-        String fileType = "png";
-        File qrFile = new File(filePath);
-        createQRImage(qrFile, qrCodeText, size, fileType);
-        engine.load("file://" + filePath);
-        int a = 0;
+        String code = txtFieldTwelveDigit.getText(); //obtient les données fournit par l'utilisateur
+        
+        int size = 270; //definit la taille de l'image
+        String fileType = "png"; //definit le type de l'image
+        File qrFile = new File(filePath); //creer le fichier
+        
+        createQRImage(qrFile, code, size, fileType); //creer le QRcode
+        engine.load("file://" + filePath); //charge le QRcode dans le WebView
     }
-
+	
+	// Methode fournit par zxing
     public static void createQRImage(File qrFile, String qrCodeText, int size, String fileType) throws WriterException, IOException {
-        // Create the ByteMatrix for the QR-Code that encodes the given String
-        Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
+        
+    	// Creer le ByteMatrix
+    	Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>(); 
         hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix byteMatrix = qrCodeWriter.encode(qrCodeText, BarcodeFormat.QR_CODE, size, size, hintMap);
-        // Make the BufferedImage that are to hold the QRCode
-        int matrixWidth = byteMatrix.getWidth();
+        
+        // Realise l'image tampon qui doit contenir le QRcode
+        int matrixWidth = byteMatrix.getWidth(); 
         BufferedImage image = new BufferedImage(matrixWidth, matrixWidth, BufferedImage.TYPE_INT_RGB);
         image.createGraphics();
 
         Graphics2D graphics = (Graphics2D) image.getGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, matrixWidth, matrixWidth);
-        // Paint and save the image using the ByteMatrix
+        
+        // Definit la couleur et sauvegarde l'image en utilisant le ByteMatrix
         graphics.setColor(Color.BLACK);
-
         for (int i = 0; i < matrixWidth; i++) {
             for (int j = 0; j < matrixWidth; j++) {
                 if (byteMatrix.get(i, j)) {

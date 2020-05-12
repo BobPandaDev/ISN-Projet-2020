@@ -10,7 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 
+
+// Class pernettant la creation d'un code barre de type EAN-13
 public class EAN13 {
+	
+	// Creation des variables global
 	public static String[] leftDigits = new String[7];
     public static String[] rightDigits = new String[6];
     public static String[] leftDigitsEncoded = new String[7];
@@ -18,36 +22,40 @@ public class EAN13 {
     public static String[] rightDigitEncoder = {"1110010","1100110", "1101100", "1000010", "1011100", "1001110", "1010000", "1000100", "1001000", "1110100"};
     public static String[] leftDigitEncoderImpair = {"0001101","0011001", "0010011", "0111101", "0100011", "0110001", "0101111", "0111011", "0110111", "0001011"};
     public static String[] leftDigitEncoderPair = {"0100111","0110011", "0011011", "0100001", "0011101", "0111001", "0000101", "0010001", "0001001", "0010111"};
-	
+    
+	// Methode principal de la class
 	public static void barCode(TextField txtFieldTwelveDigit, String filePath2, WebEngine engine, Label checkDigitLabel, Label codeSysteme, Label companyID, Label articleID) {
-		String code = txtFieldTwelveDigit.getText();
+		
+		String code = txtFieldTwelveDigit.getText(); //Recupère le nombre renseigné par l'utilisateur
 
-        if(code.length() != 12){
-            txtFieldTwelveDigit.setText("12 numÃ©ros sont requis");
+        if(code.length() != 12){ //Vérifie si le nombre de chiffre renseigné par l'utilisateur = 12
+            txtFieldTwelveDigit.setText("12 numéros sont requis");
             txtFieldTwelveDigit.setStyle("-fx-text-fill: red;");
         }
         else{
             txtFieldTwelveDigit.setStyle("-fx-text-fill: black;");
 
-            String checkDigit = checkDigit(code);
-            code = code + checkDigit;
-
+            String checkDigit = checkDigit(code); //Calcul du check digit
+            code = code + checkDigit; //Ajoute le check digit aux chiffres renseignés par l'utilisateur
+            
+            // Informe l'utilisateur des differentes parties du code barre
             checkDigitLabel.setText(checkDigit);
             codeSysteme.setText(String.valueOf(code.charAt(0))+ String.valueOf(code.charAt(1)));
             companyID.setText(String.valueOf(code.charAt(2))+ String.valueOf(code.charAt(3))+ String.valueOf(code.charAt(4))+ String.valueOf(code.charAt(5))+ String.valueOf(code.charAt(6)));
             articleID.setText(String.valueOf(code.charAt(7))+ String.valueOf(code.charAt(8))+ String.valueOf(code.charAt(9))+ String.valueOf(code.charAt(10))+ String.valueOf(code.charAt(11)));
 
 
-            gaucheDroite(code);
+            gaucheDroite(code); //Separe les chiffres de droite des chiffres de gauche
 
 
-            //rightDigitsEncoder
+            // Encode les chiffres de droite
             for (int i = 0; i < rightDigits.length; i++) {
                 rightDigitsEncoded[i] = digitsEncoder(rightDigits[i], rightDigitEncoder);
             }
-            //leftDigitsEncoder
+            // Encode les chiffres de gauche
             leftDigitsEncoder(pairImpair(leftDigits[0]));
-
+            
+            // Assemble les chiffres encodé de gauche et de droite
             String[] encodedDigits = new String[12];
             for (int i = 0; i < encodedDigits.length; i++) {
                 if(i < 6){
@@ -58,14 +66,14 @@ public class EAN13 {
                 }
             }
 
-            //Draw bars
+            // Dessine le code barre
             drawBars(encodedDigits, code, filePath2);
 
-            //chargement de l'image
+            // Charge le code barre dans le WebView
             engine.load("file://" + filePath2);
         }
 
-        //texte en noir
+        // Met le texte en noir si l'utilisateur corrige son erreur
         txtFieldTwelveDigit.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
@@ -75,9 +83,11 @@ public class EAN13 {
 
     }
 
-    //calculate Check Digit
+    // Calcule le check digit
     public static String checkDigit(String digits){
-        StringBuilder codeBuilder = new StringBuilder(digits);
+    	
+    	// Inverse le nombre renseigné par l'utilisateur
+    	StringBuilder codeBuilder = new StringBuilder(digits);
         String codeReversed = codeBuilder.reverse().toString();
 
         String position = "impair";
@@ -100,11 +110,12 @@ public class EAN13 {
         while ((total + checkDigit) % 10 != 0) {
             checkDigit++;
         }
-
+        
+        // retourne le check digit
         return String.valueOf(checkDigit);
     }
 
-    //Calculate bars
+    // Separe les chiffres de droite et les chiffres de gauche
     public static void gaucheDroite(String code){
         for (int i = 0; i<7; i++){
             leftDigits[i] = String.valueOf(code.charAt(i));
@@ -114,7 +125,7 @@ public class EAN13 {
         }
     }
 
-    //Encode digit with specified parameters
+    // Encode les chiffres de droite
     public static String digitsEncoder(String lrDigit, String[] lrEncoder){
         String a = "error";
         switch (lrDigit){
@@ -152,7 +163,7 @@ public class EAN13 {
         return a;
     }
 
-    //Set the encoding pattern
+    // Definit la parité des chiffres de gauche
     public static String[] pairImpair(String firstLeftDigits){
         String[] leftDigitEncoderPI;
 
@@ -193,7 +204,7 @@ public class EAN13 {
         return leftDigitEncoderPI;
     }
 
-    //Encode left values BCP D'ERREUR
+    // Encode les chiffres de gauche suivant leur parité
     public static void leftDigitsEncoder(String[] leftDigitEncoderPI){
         for (int i = 0; i < leftDigitEncoderPI.length; i++) {
             if(leftDigitEncoderPI[i] == "impair"){
@@ -208,10 +219,10 @@ public class EAN13 {
         }
     }
 
-    //Draw bars
+    // Dessine les barres
     public static void drawBars(String[] encodedDigits, String code, String filePath2){
-        try {
-            FileWriter writer = new FileWriter(filePath2);
+        try { //gestion des erreures
+            FileWriter writer = new FileWriter(filePath2); //preparation de l'ecriture dans un fichier
             BufferedWriter bwr = new BufferedWriter(writer);
             bwr.write("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"500\" height=\"250\">" + "\n");
             bwr.write("<line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
@@ -222,7 +233,7 @@ public class EAN13 {
             bwr.write("<line x1=\"25\" y1=\"0\" x2=\"25\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"30\" y1=\"0\" x2=\"30\" y2=\"200\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
 
-            // left guard bars
+            // Barres de garde à gauche
             bwr.write("<line x1=\"35\" y1=\"0\" x2=\"35\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"40\" y1=\"0\" x2=\"40\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"45\" y1=\"0\" x2=\"45\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
@@ -247,7 +258,7 @@ public class EAN13 {
 
             }
 
-            //center guard bars
+            // Barres de garde au centre
             bwr.write("<line x1=\"260\" y1=\"0\" x2=\"260\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"265\" y1=\"0\" x2=\"265\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"270\" y1=\"0\" x2=\"270\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
@@ -274,7 +285,7 @@ public class EAN13 {
                 }
             }
 
-            // right guard bars
+            // Barres de garde à droite
             bwr.write("<line x1=\"495\" y1=\"0\" x2=\"495\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"500\" y1=\"0\" x2=\"500\" y2=\"225\" style=\"stroke:white;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
             bwr.write("<line x1=\"505\" y1=\"0\" x2=\"505\" y2=\"225\" style=\"stroke:black;stroke-width:5\" shape-rendering=\"crispEdges\"/>" + "\n");
@@ -294,11 +305,11 @@ public class EAN13 {
             bwr.write("<text x=\"450\" y=\"245\" font-size=\"45\" fill=\"black\">" + code.charAt(12) + "</text>" + "\n");
 
             bwr.write("</svg>");
-            bwr.close();
-            System.out.println("succesfully written to a file");
+            bwr.close(); //stop l'ecriture du fichier
+            System.out.println("succesfully written to a file"); //signal qu'il n'y a pas eu d'erreur
 
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            ioe.printStackTrace(); //gestion des erreures
         }
     }
 }
