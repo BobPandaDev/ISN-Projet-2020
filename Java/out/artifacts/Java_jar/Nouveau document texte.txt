@@ -1,1 +1,0 @@
-java --module-path "%PATH_TO_FX%;mods" -m hellofx/hellofx.HelloFX
