@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 
-//Class pernettant la creation d'un QRcode a l'aide de la librairy zxing de google
+//Class permettant la creation d'un QRcode a l'aide de la librairy zxing de google
 public class QRcode {
 	
 	public static void qrCode(TextField txtFieldTwelveDigit, String filePath, WebEngine engine) throws IOException, WriterException {

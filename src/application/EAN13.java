@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.web.WebEngine;
 
 
-// Class pernettant la creation d'un code barre de type EAN-13
+// Class permettant la creation d'un code barre de type EAN-13
 public class EAN13 {
 	
 	// Creation des variables global
